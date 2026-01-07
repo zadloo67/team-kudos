@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Weekly Kudos 🎉</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 20px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .week-display {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 10px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .form-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-section h2 {
+            margin-bottom: 20px;
+            color: #667eea;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"],
+        textarea,
+        input[type="file"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus,
+        input[type="file"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        input[type="file"] {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .file-info {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .preview-container {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .preview-container.active {
+            display: block;
+        }
+
+        .gif-preview {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            margin: 10px 0;
+            object-fit: contain;
+        }
+
+        .preview-info {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            width: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-message {
+            background: #4caf50;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .error-message {
+            background: #f44336;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .gallery-section {
+            grid-column: 1 / -1;
+        }
+
+        .gallery-section h2 {
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .kudos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .kudo-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .kudo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .kudo-type {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .kudo-type.callout {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .kudo-type.kudos {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .kudo-content {
+            margin-bottom: 15px;
+        }
+
+        .kudo-content p {
+            line-height: 1.6;
+            color: #333;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .kudo-gif {
+            width: 100%;
+            max-height: 250px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin: 15px 0;
+        }
+
+        .kudo-timestamp {
+            font-size: 0.85rem;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-btn:hover {
+            background: white;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .control-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .stats {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .kudos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .control-btn,
+            button {
+                width: 100%;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-content h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .modal-content p {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .modal-form input[type="password"] {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .modal-form input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .modal-buttons .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .modal-buttons .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .modal-buttons .cancel-btn {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .modal-buttons .cancel-btn:hover {
+            background: #d0d0d0;
+        }
+
+        .admin-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-btn.admin-only {
+            position: relative;
+        }
+
+        .control-btn.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Admin Password Modal -->
+    <div class="modal" id="adminModal">
+        <div class="modal-content">
+            <h2>🔐 Admin Access</h2>
+            <p>Enter the admin password to access management features.</p>
+            <form class="modal-form" onsubmit="handleAdminLogin(event)">
+                <input type="password" id="adminPassword" placeholder="Enter password" required autofocus aria-label="Enter admin password">
+                <div class="modal-buttons">
+                    <button type="submit" class="submit-btn">Login</button>
+                    <button type="button" class="cancel-btn" onclick="closeAdminModal()">Cancel</button>
+                </div>
+            </form>
+            <p style="margin-top: 15px; font-size: 0.85rem; color: #999; text-align: center;">
+                (Hint: Change the default password in the code for security!)
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>🎉 Team Weekly Kudos<span id="adminBadge" class="admin-badge" style="display: none;">Admin</span></h1>
+            <p>Celebrate wins and call out awesome team members!</p>
+            <div class="week-display">
+                <span>Week of <span id="weekStart">Loading...</span></span>
+            </div>
+        </header>
+
+        <div class="controls">
+            <button class="control-btn" onclick="scrollToForm()" aria-label="Jump to submission form">📝 Add Feedback</button>
+            <button class="control-btn secondary" onclick="scrollToGallery()" aria-label="Jump to gallery">🖼️ View Feedback</button>
+            <button class="control-btn secondary admin-only hidden" id="newWeekBtn" onclick="promptAdminPassword('resetWeek')" aria-label="Reset for new week">🔄 New Week</button>
+            <button class="control-btn secondary admin-only hidden" id="exportBtn" onclick="promptAdminPassword('exportData')" aria-label="Export feedback data">📥 Export</button>
+            <button class="control-btn secondary" id="adminBtn" onclick="promptAdminPassword('login')" aria-label="Admin login">🔐 Admin Login</button>
+            <button class="control-btn secondary hidden" id="logoutBtn" onclick="logout()" aria-label="Admin logout">👋 Logout</button>
+        </div>
+
+        <main>
+            <section class="form-section">
+                <h2 id="formTitle">✨ Submit Feedback</h2>
+                <div class="success-message" id="successMessage" role="alert"></div>
+                <div class="error-message" id="errorMessage" role="alert"></div>
+                
+                <form id="kudosForm" onsubmit="submitKudo(event)">
+                    <div class="form-group">
+                        <label for="kudosType">Feedback Type *</label>
+                        <select id="kudosType" required aria-label="Select feedback type - Kudos or Callout">
+                            <option value="kudos">⭐ Kudos (Positive)</option>
+                            <option value="callout">📢 Callout (Recognition)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="kudosMessage">Your Message *</label>
+                        <textarea id="kudosMessage" placeholder="Share what you want to say... Be specific!" required aria-label="Enter your feedback message" maxlength="1000"></textarea>
+                        <div class="file-info"><span id="charCount">0</span>/1000 characters</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gifUpload">Add a GIF (optional)</label>
+                        <input type="file" id="gifUpload" accept="image/gif,image/jpeg,image/png,image/webp" aria-label="Upload an image or GIF file">
+                        <div class="file-info">Max 5MB. Formats: GIF, PNG, JPG, WebP</div>
+                    </div>
+
+                    <div class="preview-container" id="previewContainer">
+                        <img id="gifPreview" class="gif-preview" alt="Preview of uploaded image">
+                        <div class="preview-info">✓ Image ready to upload</div>
+                    </div>
+
+                    <button type="submit" aria-label="Submit your feedback">🚀 Submit Anonymously</button>
+                </form>
+            </section>
+
+            <section class="form-section">
+                <h2>📊 Stats</h2>
+                <div class="stats" id="statsContainer">
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalCount">0</div>
+                        <div class="stat-label">Total Feedback</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="kudosCount">0</div>
+                        <div class="stat-label">Kudos</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="calloutCount">0</div>
+                        <div class="stat-label">Callouts</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="gallery-section">
+                <h2 id="galleryTitle">🖼️ This Week's Feedback</h2>
+                <div id="kudosGallery" class="kudos-grid">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>No feedback yet. Be the first to submit!</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // GitHub Configuration
+        const GITHUB_USERNAME = 'zadloo67';
+        const GITHUB_REPO = 'team-kudos';
+        const GITHUB_TOKEN = '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';
+        const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/data.json`;
+        const GITHUB_RAW_URL = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${GITHUB_REPO}/main/data.json`;
+        
+        // Admin Configuration
+        const ADMIN_PASSWORD = 'admin123'; // ⚠️ CHANGE THIS TO YOUR OWN PASSWORD!
+        const ADMIN_SESSION_KEY = 'kudos_admin_session';
+        let currentAdminAction = null;
+        let lastFetchTime = 0;
+        let syncInterval = null;
+        let lastETag = null;
+
+        // Admin Authentication Functions
+        function isAdminLoggedIn() {
+            return sessionStorage.getItem(ADMIN_SESSION_KEY) === 'true';
+        }
+
+        function updateAdminUI() {
+            const isAdmin = isAdminLoggedIn();
+            document.getElementById('adminBtn').classList.toggle('hidden', isAdmin);
+            document.getElementById('logoutBtn').classList.toggle('hidden', !isAdmin);
+            document.getElementById('newWeekBtn').classList.toggle('hidden', !isAdmin);
+            document.getElementById('exportBtn').classList.toggle('hidden', !isAdmin);
+            document.getElementById('adminBadge').style.display = isAdmin ? 'inline-block' : 'none';
+        }
+
+        function promptAdminPassword(action) {
+            currentAdminAction = action;
+            if (action === 'login') {
+                document.getElementById('adminModal').classList.add('show');
+            } else if (isAdminLoggedIn()) {
+                // If already logged in, execute the action directly
+                if (action === 'resetWeek') {
+                    resetWeek();
+                } else if (action === 'exportData') {
+                    exportData();
+                }
+            } else {
+                // Show password prompt
+                document.getElementById('adminModal').classList.add('show');
+            }
+            document.getElementById('adminPassword').value = '';
+        }
+
+        function handleAdminLogin(event) {
+            event.preventDefault();
+            const password = document.getElementById('adminPassword').value;
+
+            if (password === ADMIN_PASSWORD) {
+                sessionStorage.setItem(ADMIN_SESSION_KEY, 'true');
+                closeAdminModal();
+                updateAdminUI();
+                
+                // Execute the pending action if it was resetWeek or exportData
+                if (currentAdminAction === 'resetWeek') {
+                    resetWeek();
+                } else if (currentAdminAction === 'exportData') {
+                    exportData();
+                }
+                currentAdminAction = null;
+            } else {
+                alert('❌ Incorrect password. Try again!');
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('adminPassword').focus();
+            }
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.remove('show');
+            document.getElementById('adminPassword').value = '';
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                sessionStorage.removeItem(ADMIN_SESSION_KEY);
+                updateAdminUI();
+            }
+        }
+
+        class KudosManager {
+            constructor() {
+                this.data = [];
+                this.currentWeekStart = this.getWeekStart(new Date());
+                this.setupEventListeners();
+                this.initializeWeek();
+                this.loadDataFromGitHub();
+                this.startSyncInterval();
+            }
+
+            getWeekStart(date) {
+                const d = new Date(date);
+                const day = d.getDay();
+                const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+                return new Date(d.setDate(diff));
+            }
+
+            initializeWeek() {
+                const now = new Date();
+                this.currentWeekStart = this.getWeekStart(now);
+                this.displayWeekStart();
+            }
+
+            displayWeekStart() {
+                const options = { month: 'short', day: 'numeric' };
+                document.getElementById('weekStart').textContent = this.currentWeekStart.toLocaleDateString('en-US', options);
+            }
+
+            async loadDataFromGitHub() {
+                try {
+                    const response = await fetch(GITHUB_RAW_URL);
+                    if (response.ok) {
+                        const fileData = await response.json();
+                        
+                        // Check if we need to reset the week
+                        const storedWeekStart = new Date(fileData.currentWeek);
+                        const storedWeekStartDate = this.getWeekStart(storedWeekStart);
+                        
+                        if (this.currentWeekStart.getTime() !== storedWeekStartDate.getTime()) {
+                            // Different week - reset data
+                            this.data = [];
+                            await this.saveDataToGitHub();
+                        } else {
+                            this.data = fileData.kudos || [];
+                            // Sort by timestamp, newest first
+                            this.data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                        }
+                    } else {
+                        this.data = [];
+                    }
+                    this.render();
+                } catch (error) {
+                    console.error('Error loading from GitHub:', error);
+                    this.loadFromLocalStorage();
+                }
+            }
+
+            loadFromLocalStorage() {
+                const stored = localStorage.getItem('team_kudos_backup');
+                this.data = stored ? JSON.parse(stored) : [];
+                this.render();
+            }
+
+            startSyncInterval() {
+                // Sync with GitHub every 3 seconds
+                if (syncInterval) clearInterval(syncInterval);
+                syncInterval = setInterval(() => {
+                    this.loadDataFromGitHub();
+                }, 3000);
+            }
+
+            async saveDataToGitHub() {
+                try {
+                    const fileData = {
+                        kudos: this.data,
+                        currentWeek: this.currentWeekStart.toISOString()
+                    };
+
+                    // Get current SHA for update
+                    const getResponse = await fetch(GITHUB_API_URL, {
+                        headers: {
+                            'Authorization': `token ${GITHUB_TOKEN}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+
+                    let sha = null;
+                    if (getResponse.ok) {
+                        const fileInfo = await getResponse.json();
+                        sha = fileInfo.sha;
+                    }
+
+                    // Update or create the file
+                    const updateResponse = await fetch(GITHUB_API_URL, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${GITHUB_TOKEN}`,
+                            'Accept': 'application/vnd.github.v3+json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            message: `Update kudos at ${new Date().toLocaleTimeString()}`,
+                            content: btoa(JSON.stringify(fileData, null, 2)),
+                            sha: sha
+                        })
+                    });
+
+                    if (!updateResponse.ok) {
+                        console.error('Error saving to GitHub');
+                        this.saveToLocalStorage();
+                    }
+                } catch (error) {
+                    console.error('Error saving to GitHub:', error);
+                    this.saveToLocalStorage();
+                }
+            }
+
+            saveToLocalStorage() {
+                localStorage.setItem('team_kudos_backup', JSON.stringify(this.data));
+            }
+
+            saveData() {
+                this.saveToLocalStorage();
+                this.saveDataToGitHub();
+            }
+
+            setupEventListeners() {
+                document.getElementById('kudosMessage').addEventListener('input', (e) => {
+                    document.getElementById('charCount').textContent = e.target.value.length;
+                });
+
+                document.getElementById('gifUpload').addEventListener('change', (e) => {
+                    this.handleGifUpload(e);
+                });
+            }
+
+            handleGifUpload(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                if (file.size > 5 * 1024 * 1024) {
+                    this.showError('File is too large! Max 5MB.');
+                    event.target.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('gifPreview').src = e.target.result;
+                    document.getElementById('previewContainer').classList.add('active');
+                    document.getElementById('gifUpload').dataset.base64 = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            showSuccess(message) {
+                const el = document.getElementById('successMessage');
+                el.textContent = message;
+                el.classList.add('show');
+                setTimeout(() => el.classList.remove('show'), 3000);
+            }
+
+            showError(message) {
+                const el = document.getElementById('errorMessage');
+                el.textContent = message;
+                el.classList.add('show');
+                setTimeout(() => el.classList.remove('show'), 3000);
+            }
+
+            addKudo(type, message, gifData) {
+                const kudo = {
+                    id: Date.now() + Math.random(),
+                    type,
+                    message,
+                    gif: gifData || null,
+                    timestamp: new Date().toISOString()
+                };
+
+                this.data.unshift(kudo);
+                this.saveData();
+                this.render();
+                this.showSuccess('✨ Feedback submitted anonymously!');
+            }
+
+            deleteKudo(id) {
+                this.data = this.data.filter(k => k.id !== id);
+                this.saveData();
+                this.render();
+            }
+
+            getStats() {
+                return {
+                    total: this.data.length,
+                    kudos: this.data.filter(k => k.type === 'kudos').length,
+                    callout: this.data.filter(k => k.type === 'callout').length
+                };
+            }
+
+            render() {
+                this.renderGallery();
+                this.renderStats();
+            }
+
+            renderGallery() {
+                const gallery = document.getElementById('kudosGallery');
+                
+                if (this.data.length === 0) {
+                    gallery.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📭</div>
+                            <p>No feedback yet. Be the first to submit!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                gallery.innerHTML = this.data.map(kudo => `
+                    <article class="kudo-card" role="article" aria-label="Feedback from anonymous team member">
+                        <span class="kudo-type ${kudo.type}">${kudo.type === 'kudos' ? '⭐ Kudos' : '📢 Callout'}</span>
+                        <div class="kudo-content">
+                            <p>${this.escapeHtml(kudo.message)}</p>
+                        </div>
+                        ${kudo.gif ? `<img src="${kudo.gif}" alt="Team member uploaded this image" class="kudo-gif">` : ''}
+                        <div class="kudo-timestamp">${this.formatTime(kudo.timestamp)}</div>
+                    </article>
+                `).join('');
+            }
+
+            renderStats() {
+                const stats = this.getStats();
+                document.getElementById('totalCount').textContent = stats.total;
+                document.getElementById('kudosCount').textContent = stats.kudos;
+                document.getElementById('calloutCount').textContent = stats.callout;
+            }
+
+            formatTime(timestamp) {
+                const date = new Date(timestamp);
+                const now = new Date();
+                const diff = now - date;
+                const minutes = Math.floor(diff / 60000);
+                const hours = Math.floor(diff / 3600000);
+                const days = Math.floor(diff / 86400000);
+
+                if (minutes < 1) return 'just now';
+                if (minutes < 60) return `${minutes}m ago`;
+                if (hours < 24) return `${hours}h ago`;
+                if (days < 7) return `${days}d ago`;
+
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        }
+
+        // Initialize the app
+        let manager;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            manager = new KudosManager();
+            updateAdminUI();
+        });
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('adminModal');
+            if (event.target === modal) {
+                closeAdminModal();
+            }
+        };
+
+        function submitKudo(event) {
+            event.preventDefault();
+
+            const type = document.getElementById('kudosType').value;
+            const message = document.getElementById('kudosMessage').value.trim();
+            const gifData = document.getElementById('gifUpload').dataset.base64 || null;
+
+            if (!message) {
+                manager.showError('Please enter a message!');
+                return;
+            }
+
+            manager.addKudo(type, message, gifData);
+
+            // Reset form
+            document.getElementById('kudosForm').reset();
+            document.getElementById('charCount').textContent = '0';
+            document.getElementById('previewContainer').classList.remove('active');
+            document.getElementById('gifUpload').dataset.base64 = '';
+        }
+
+        function resetWeek() {
+            if (confirm('🔄 Start a new week? This will clear all current feedback.')) {
+                manager.currentWeekStart = manager.getWeekStart(new Date());
+                manager.data = [];
+                manager.displayWeekStart();
+                manager.render();
+                manager.saveDataToGitHub();
+                manager.showSuccess('✨ New week started! Previous feedback archived.');
+            }
+        }
+
+        function exportData() {
+            if (manager.data.length === 0) {
+                manager.showError('No feedback to export!');
+                return;
+            }
+
+            const weekStart = manager.currentWeekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const exportText = `Team Kudos - Week of ${weekStart}\n\n${manager.data.map(k => {
+                return `[${k.type.toUpperCase()}] ${k.message}\nSubmitted: ${manager.formatTime(k.timestamp)}\n---`;
+            }).join('\n')}`;
+
+            const blob = new Blob([exportText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `kudos-week-${manager.currentWeekStart.toISOString().split('T')[0]}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            manager.showSuccess('📥 Feedback exported!');
+        }
+
+        function scrollToForm() {
+            document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('kudosMessage').focus();
+        }
+
+        function scrollToGallery() {
+            document.querySelector('.gallery-section').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
